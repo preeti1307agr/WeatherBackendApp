@@ -43,16 +43,7 @@ public class WeatherService {
         HttpEntity <String> entity = new HttpEntity<String>(headers);
 	      
 	    String weatherResult =  restTemplate.exchange(weatherURL, HttpMethod.GET, entity, String.class).getBody();
-//        String weatherResult= null;
-//	    try {
-//	    	weatherResult =  restTemplate.exchange(weatherURL, HttpMethod.GET, entity, String.class).getBody();
-//	    } catch(HttpStatusCodeException e) {
-//	        return (List<WeatherReport>) ResponseEntity.status(e.getRawStatusCode()).headers(e.getResponseHeaders())
-//	                .body(e.getResponseBodyAsString());
-//	    }
-	
 
-    	
     	double temp = 0;
     	double tempMin = 0;
     	double tempMax = 0;

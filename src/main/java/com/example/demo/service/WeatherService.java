@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import com.example.demo.exception.WeatherServiceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,8 +29,7 @@ import com.example.demo.models.Weather;
 
 @Service
 public class WeatherService {
-	
-	public List<WeatherReport> getWeatherForecast(String city) throws ParseException {
+	public List<WeatherReport> getWeatherForecast(String city) throws WeatherServiceException, ParseException {
 		
 		Logger logger = LoggerFactory.getLogger(WeatherService.class);
 		
@@ -57,7 +58,6 @@ public class WeatherService {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     	SimpleDateFormat timeAndDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	Date dateAndTime = null;
-    	
         
         List<WeatherReport> weatherList = new ArrayList<>();
 

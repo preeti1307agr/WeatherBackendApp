@@ -56,6 +56,7 @@ public class WeatherControllerTest {
                 "    },\n" +
                 "    weatherDate: \"2023-09-07\"\n" +
                 "  }";
+
         Weather w = new Weather();
         w.setWeatherIcon("");
         w.setWeatherCondition("");
@@ -78,14 +79,12 @@ public class WeatherControllerTest {
 
         List<WeatherReport> weatherReports = new ArrayList<>();
         weatherReports.add(we);
-        // Add some WeatherReport objects to the list
 
         // Mock the behavior of the WeatherService
         when(weatherService.getWeatherForecast(city)).thenReturn(weatherReports);
 
         mockMvc.perform(get("/forecast/" + city))
                 .andExpect(status().isOk());
-        // You can add more assertions here to check the response content and structure
     }
 }
 

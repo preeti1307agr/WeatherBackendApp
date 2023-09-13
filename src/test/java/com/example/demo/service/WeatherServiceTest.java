@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.*;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +32,9 @@ public class WeatherServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+            ReflectionTestUtils.setField(weatherService, "applicationKey", "d2929e9483efc82c82c32ee7e02d563e");
+            ReflectionTestUtils.setField(weatherService, "count", "30");
+            ReflectionTestUtils.setField(weatherService, "unitsForTemp", "metric");
     }
 
     @Test
@@ -83,4 +87,7 @@ public class WeatherServiceTest {
         }
     }
 }
+
+
+
 

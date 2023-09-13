@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import com.example.demo.models.WeatherReport;
 import com.example.demo.service.WeatherService;
 
+import javax.validation.constraints.Size;
+
 @RestController
 public class WeatherController {
 	
@@ -23,7 +25,7 @@ public class WeatherController {
 	}
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/forecast/{city}")
-	public List<WeatherReport> getWeatherForThreeDays(@PathVariable String city) {
+	public List<WeatherReport> getWeatherForThreeDays(@Size(min = 4, max = 100) @PathVariable String city) {
 		try {
 			return this.weatherService.getWeatherForecast(city);
 		} catch (WeatherServiceException | ParseException ex) {

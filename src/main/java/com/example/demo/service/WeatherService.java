@@ -7,18 +7,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.example.demo.client.OpenWeatherMapFeignClient;
 import com.example.demo.exception.WeatherServiceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.example.demo.models.Forecast;
@@ -29,13 +30,31 @@ import com.example.demo.models.Weather;
 
 @Service
 public class WeatherService {
+
+	@Value("${service.open-weather-map.api-key}")
+	String applicationKey;
+
+	@Value("${service.open-weather-map.count}")
+	String count;
+
+	@Value("${service.open-weather-map.units}")
+	String unitsForTemp;
+
+	private final OpenWeatherMapFeignClient openWeatherMapFeignClient;
+
+	private Logger logger = LoggerFactory.getLogger(WeatherService.class);
+
+	public WeatherService(OpenWeatherMapFeignClient openWeatherMapFeignClient) {
+		this.openWeatherMapFeignClient = openWeatherMapFeignClient;
+	}
+
 	public List<WeatherReport> getWeatherForecast(String city) throws WeatherServiceException, ParseException {
-		
-		Logger logger = LoggerFactory.getLogger(WeatherService.class);
-		
+
 		//making API call to openweathermap.org
 		RestTemplate restTemplate = new RestTemplate();
-		String weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid=d2929e9483efc82c82c32ee7e02d563e&cnt=30&units=metric";
+		
+		String weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+applicationKey+"&cnt="+count+"&units="+unitsForTemp+"";
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.CONTENT_TYPE,"application/json");
 		headers.set(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
@@ -44,8 +63,14 @@ public class WeatherService {
         HttpEntity <String> entity = new HttpEntity<String>(headers);
 	      
 	    String weatherResult =  restTemplate.exchange(weatherURL, HttpMethod.GET, entity, String.class).getBody();
+//		String weatherResult = openWeatherMapFeignClient.getForecast(city, applicationKey, count, unitsForTemp);
 
-    	double temp = 0;
+		if (weatherResult == null) {
+			throw new WeatherServiceException(
+					"Invalid response from Open Weather Map");
+		}
+
+		double temp = 0;
     	double tempMin = 0;
     	double tempMax = 0;
     	double pressure = 0;

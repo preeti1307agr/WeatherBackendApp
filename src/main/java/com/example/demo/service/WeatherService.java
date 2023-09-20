@@ -48,11 +48,12 @@ public class WeatherService {
 		this.openWeatherMapFeignClient = openWeatherMapFeignClient;
 	}
 
+	// This method retrieves weather forecast data for a given city.
 	public List<WeatherReport> getWeatherForecast(String city) throws WeatherServiceException, ParseException {
 
-		//making API call to openweathermap.org
+		// Making an API call to openweathermap.org
 		RestTemplate restTemplate = new RestTemplate();
-		
+
 		String weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q="+city+"&appid="+applicationKey+"&cnt="+count+"&units="+unitsForTemp+"";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -61,7 +62,8 @@ public class WeatherService {
 		headers.set(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "86400");
         headers.setAccessControlAllowMethods(Arrays.asList(HttpMethod.GET, HttpMethod.OPTIONS));
         HttpEntity <String> entity = new HttpEntity<String>(headers);
-	      
+
+		// Sending an HTTP GET request to retrieve weather data
 	    String weatherResult =  restTemplate.exchange(weatherURL, HttpMethod.GET, entity, String.class).getBody();
 //		String weatherResult = openWeatherMapFeignClient.getForecast(city, applicationKey, count, unitsForTemp);
 
@@ -70,6 +72,7 @@ public class WeatherService {
 					"Invalid response from Open Weather Map");
 		}
 
+		// Variables to store weather data
 		double temp = 0;
     	double tempMin = 0;
     	double tempMax = 0;
@@ -86,6 +89,7 @@ public class WeatherService {
         
         List<WeatherReport> weatherList = new ArrayList<>();
 
+		// Parsing the JSON response from the weather API
         JSONObject weatherForecast = new JSONObject(weatherResult);
         logger.info("Weather Forecast: "+ weatherResult);
 
@@ -93,7 +97,7 @@ public class WeatherService {
         logger.info("Weather Forecast object: "+ weatherForecastObject);
 
         for(int i = 0; i < weatherForecastObject.length(); i++) {
-              	
+
         	JSONObject weatherObject = weatherForecastObject.getJSONObject(i);
         
         	JSONObject main = weatherObject.getJSONObject("main");
